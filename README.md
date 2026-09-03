@@ -1,6 +1,6 @@
 # student_grouping
 
-관심 주제 카드 기반 자율연구 모둠 구성 웹앱(Next.js + PostgreSQL + Prisma)입니다.
+관심 주제 기반 모둠 구성을 지원하는 웹앱(Next.js + PostgreSQL + Prisma)입니다.
 
 ## 기능
 
