@@ -66,7 +66,7 @@ export function LoginForm() {
           disabled={pending}
           className="font-display mt-1.5 cursor-pointer rounded-[10px] bg-accent py-3 text-[15px] text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
         >
-          {pending ? "잠시만요…" : isLogin ? "로그인" : "가입하고 시작하기"}
+          {pending ? (isLogin ? "로그인 중…" : "잠시만요…") : isLogin ? "로그인" : "가입하고 시작하기"}
         </button>
       </form>
 
