@@ -16,7 +16,7 @@ export async function TopicWriteView({ inModal = false }: { inModal?: boolean })
         <span className="text-accent">
           <PencilIcon size={16} />
         </span>
-        연구 주제 작성
+        주제 작성
       </div>
       <TopicWriteForm
         initialTitle={title}
