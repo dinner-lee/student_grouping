@@ -48,7 +48,7 @@ export default async function LoginPage() {
             priority
           />
           <span className="font-display text-[20px] font-normal tracking-tight text-accent">
-            자율연구 모둠 구성
+            모둠 구성
           </span>
         </div>
         {firstRun ? <SetupForm /> : <LoginForm />}
