@@ -34,7 +34,7 @@ export default async function AppLayout({
               />
               <span className="hidden h-4 w-px bg-line md:block" />
               <span className="font-display hidden text-[15px] font-normal tracking-tight whitespace-nowrap text-accent md:inline">
-                자율연구 모둠 구성
+                모둠 구성
               </span>
             </div>
             <AppNav role={user.role} />

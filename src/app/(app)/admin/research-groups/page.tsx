@@ -137,7 +137,7 @@ export default async function ResearchGroupsPage() {
   return (
     <div className="flex flex-col gap-[18px]">
       <div className="flex flex-col gap-0.5">
-        <div className="font-display text-[17px] font-bold tracking-tight">자율연구 모둠 구성</div>
+        <div className="font-display text-[17px] font-bold tracking-tight">모둠 구성</div>
         <div className="text-[12.5px] text-stone-400">
           학습자들이 연구 주제 카드에 매긴 관심 순위(1~5)를 기준으로 모둠을 구성합니다
         </div>
