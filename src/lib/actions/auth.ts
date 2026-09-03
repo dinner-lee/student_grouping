@@ -63,6 +63,41 @@ export async function registerAction(
   }
 }
 
+// 최초 설정 — 아직 계정이 하나도 없을 때만 관리자 계정을 생성 (배포 직후 1회)
+export async function bootstrapAdminAction(
+  _prev: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
+  const name = String(formData.get("name") ?? "").trim();
+  const username = String(formData.get("username") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+
+  if (!name || !username || !password) return { error: "모든 항목을 입력해주세요" };
+  if (password.length < 6) return { error: "비밀번호는 6자 이상이어야 합니다" };
+  if (!/^[a-zA-Z0-9_.-]{3,30}$/.test(username))
+    return { error: "아이디는 3–30자의 영문/숫자/._- 만 사용할 수 있습니다" };
+
+  const count = await prisma.user.count();
+  if (count > 0) return { error: "이미 설정이 완료된 서비스입니다. 로그인해주세요" };
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  await prisma.user.create({ data: { username, name, passwordHash, role: "ADMIN" } });
+  // 학습자 가입용 기본 초대 코드
+  await prisma.inviteCode.upsert({
+    where: { code: "WELCOME" },
+    update: { active: true },
+    create: { code: "WELCOME", role: "LEARNER", active: true },
+  });
+
+  try {
+    await signIn("credentials", { username, password, redirectTo: "/" });
+    return {};
+  } catch (e) {
+    if (e instanceof AuthError) return { error: "계정은 생성되었습니다. 로그인해주세요" };
+    throw e;
+  }
+}
+
 export async function googleLoginAction() {
   await signIn("google", { redirectTo: "/" });
 }

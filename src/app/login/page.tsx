@@ -2,7 +2,9 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { googleLoginAction } from "@/lib/actions/auth";
+import { prisma } from "@/lib/prisma";
 import { LoginForm } from "./login-form";
+import { SetupForm } from "./setup-form";
 
 function GoogleIcon() {
   return (
@@ -31,6 +33,8 @@ export default async function LoginPage() {
   const session = await auth();
   if (session?.user) redirect("/");
   const googleEnabled = !!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
+  // 배포 직후 계정이 하나도 없으면 관리자 계정 생성 화면을 표시
+  const firstRun = (await prisma.user.count()) === 0;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper p-6">
@@ -47,7 +51,7 @@ export default async function LoginPage() {
             자율연구 모둠 구성
           </span>
         </div>
-        <LoginForm />
+        {firstRun ? <SetupForm /> : <LoginForm />}
         {googleEnabled && (
           <>
             <div className="my-5 flex items-center gap-3">

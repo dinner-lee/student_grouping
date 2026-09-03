@@ -103,7 +103,7 @@ export function AppNav({ role, variant = "desktop" }: { role: Role; variant?: "d
   if (variant === "desktop")
     return (
       <nav className="hidden items-center gap-1 md:flex">
-        {dropdown("자율연구", "/topics", researchActive, ADMIN_RESEARCH_SUBMENU)}
+        {dropdown("모둠 구성", "/topics", researchActive, ADMIN_RESEARCH_SUBMENU)}
         {dropdown("계정 관리", "/admin/users", accountActive, ADMIN_ACCOUNT_SUBMENU)}
       </nav>
     );
@@ -134,7 +134,7 @@ export function AppNav({ role, variant = "desktop" }: { role: Role; variant?: "d
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute right-0 z-50 mt-1.5 flex w-52 flex-col overflow-hidden rounded-xl border border-line bg-white py-1.5 shadow-[0_6px_24px_rgba(0,0,0,0.1)]">
             <span className="px-5 pt-2 pb-1 text-[10.5px] font-semibold text-stone-400">
-              자율연구
+              모둠 구성
             </span>
             {ADMIN_RESEARCH_SUBMENU.map((t) => mobileItem(t.href, t.label, t.icon))}
             <span className="mt-1 border-t border-line-soft px-5 pt-3 pb-1 text-[10.5px] font-semibold text-stone-400">
