@@ -54,7 +54,7 @@ export function LoginForm() {
         <input
           name="password"
           type="password"
-          placeholder="비밀번호"
+          placeholder={isLogin ? "비밀번호" : "비밀번호 (6자 이상)"}
           className={inputCls}
           required
         />
