@@ -12,7 +12,7 @@ import {
 } from "@/components/topic-network";
 import { UserAvatar } from "@/components/user-menu";
 import { detectCommunities } from "@/lib/community";
-import { CompassIcon } from "@/components/icons";
+import { CompassIcon, PencilIcon } from "@/components/icons";
 
 export default async function TopicsPage({
   searchParams,
@@ -390,18 +390,29 @@ export default async function TopicsPage({
             </div>
           )}
         </div>
-        <div className="flex rounded-[9px] bg-line-soft p-[3px]">
-          {viewTabs.map((t) => (
+        <div className="flex items-center gap-2">
+          {user.role === "LEARNER" && (
             <Link
-              key={t.href}
-              href={t.href}
-              className={`font-display rounded-[7px] px-3.5 py-1.5 text-[12.5px] ${
-                t.active ? "bg-white text-stone-900 shadow-sm" : "text-stone-400"
-              }`}
+              href="/topics/write"
+              className="font-display flex items-center gap-1.5 rounded-[9px] bg-[linear-gradient(135deg,#2a63b4,#003E81)] px-3.5 py-2 text-[12.5px] text-white hover:brightness-115"
             >
-              {t.label}
+              <PencilIcon size={13} />
+              작성
             </Link>
-          ))}
+          )}
+          <div className="flex rounded-[9px] bg-line-soft p-[3px]">
+            {viewTabs.map((t) => (
+              <Link
+                key={t.href}
+                href={t.href}
+                className={`font-display rounded-[7px] px-3.5 py-1.5 text-[12.5px] ${
+                  t.active ? "bg-white text-stone-900 shadow-sm" : "text-stone-400"
+                }`}
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
       {exploreContent}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { Role } from "@prisma/client";
 import { logoutAction } from "@/lib/actions/auth";
 import { initialOf } from "@/lib/utils";
-import { UserIcon, PencilIcon, LogoutIcon, CalendarCheckIcon } from "@/components/icons";
+import { UserIcon, LogoutIcon } from "@/components/icons";
 
 export function UserAvatar({
   name,
@@ -42,7 +42,6 @@ export function UserAvatar({
 export function UserMenu({
   name,
   image,
-  role,
 }: {
   name: string;
   image: string | null;
@@ -65,28 +64,6 @@ export function UserMenu({
             </span>
             사용자 정보 수정
           </Link>
-          {role === "LEARNER" && (
-            <>
-              <Link
-                href="/profile#attendance"
-                className="font-display flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-stone-700 hover:bg-paper"
-              >
-                <span className="text-stone-400">
-                  <CalendarCheckIcon size={15} />
-                </span>
-                출결 확인
-              </Link>
-              <Link
-                href="/profile#topic"
-                className="font-display flex items-center gap-2.5 px-4 py-2.5 text-[13px] text-stone-700 hover:bg-paper"
-              >
-                <span className="text-stone-400">
-                  <PencilIcon size={15} />
-                </span>
-                내 연구 주제 설정
-              </Link>
-            </>
-          )}
           <div className="my-1 border-t border-line-soft" />
           <form action={logoutAction}>
             <button className="font-display flex w-full cursor-pointer items-center gap-2.5 px-4 py-2.5 text-left text-[13px] text-stone-700 hover:bg-paper">
