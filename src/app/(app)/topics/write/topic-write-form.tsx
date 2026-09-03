@@ -79,7 +79,7 @@ export function TopicWriteForm({
               }
             }}
             placeholder="키워드"
-            className="h-7 min-w-[100px] flex-1 rounded-full border-none bg-transparent px-2 text-[12.5px] text-stone-800 outline-none placeholder:text-stone-300"
+            className="h-8 min-w-[110px] flex-1 rounded-full border border-line bg-white px-3.5 text-[12.5px] text-stone-800 outline-none focus:border-accent placeholder:text-stone-300"
           />
         </div>
       </div>
