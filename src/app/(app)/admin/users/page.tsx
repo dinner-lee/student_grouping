@@ -4,6 +4,7 @@ import { UserAvatar } from "@/components/user-menu";
 import { RoleToggle } from "./role-toggle";
 import { InviteCodeManager } from "./invite-codes";
 import { LogoSettings } from "./logo-settings";
+import { SettingsIcon } from "@/components/icons";
 
 export default async function AdminUsersPage() {
   const me = await requireAdmin();
@@ -20,7 +21,12 @@ export default async function AdminUsersPage() {
   return (
     <div className="flex flex-col gap-[18px]">
       <div className="flex flex-col gap-0.5">
-        <div className="font-display text-[17px] font-bold tracking-tight">환경 설정 관리</div>
+        <div className="flex items-center gap-2 font-display text-[17px] font-bold tracking-tight">
+          <span className="text-accent">
+            <SettingsIcon size={18} />
+          </span>
+          환경 설정 관리
+        </div>
       </div>
 
       <InviteCodeManager initial={inviteCodes} />

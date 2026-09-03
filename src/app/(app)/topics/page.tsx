@@ -12,6 +12,7 @@ import {
 } from "@/components/topic-network";
 import { UserAvatar } from "@/components/user-menu";
 import { detectCommunities } from "@/lib/community";
+import { CompassIcon } from "@/components/icons";
 
 export default async function TopicsPage({
   searchParams,
@@ -377,7 +378,12 @@ export default async function TopicsPage({
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-col gap-0.5">
-          <div className="font-display text-[17px] font-bold tracking-tight">주제 탐색</div>
+          <div className="flex items-center gap-2 font-display text-[17px] font-bold tracking-tight">
+            <span className="text-accent">
+              <CompassIcon size={18} />
+            </span>
+            주제 탐색
+          </div>
           {mode !== "cards" && (
             <div className="text-[12.5px] text-stone-400">
               {mode === "network" ? "관심 키워드가 겹치는 학생 네트워크" : "학생과 키워드의 연결"}
