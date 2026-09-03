@@ -38,6 +38,12 @@ model InviteCode {
   createdAt DateTime @default(now())
 }
 
+// 서비스 전역 설정 (단일 행, id="main") — 관리자 화면에서 편집
+model AppSettings {
+  id      String  @id @default("main")
+  logoUrl String? // 헤더·로그인 화면에 표시할 로고 이미지 URL (비우면 로고 없이 텍스트만 표시)
+}
+
 // ── 관심 연구 주제 카드 ─────────────────────────────────
 
 model Topic {

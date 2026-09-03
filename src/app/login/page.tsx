@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { googleLoginAction } from "@/lib/actions/auth";
@@ -34,19 +33,23 @@ export default async function LoginPage() {
   if (session?.user) redirect("/");
   const googleEnabled = !!(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
   // 배포 직후 계정이 하나도 없으면 관리자 계정 생성 화면을 표시
-  const firstRun = (await prisma.user.count()) === 0;
+  const [firstRun, settings] = await Promise.all([
+    prisma.user.count().then((n) => n === 0),
+    prisma.appSettings.findUnique({ where: { id: "main" } }),
+  ]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-paper p-6">
       <div className="w-full max-w-md rounded-2xl border border-line bg-white p-8 shadow-[0_2px_16px_rgba(0,0,0,0.04)]">
         <div className="mb-7 flex flex-col items-center gap-3 border-b border-line-soft pb-7">
-          <Image
-            src="/lsri-logo.png"
-            alt="학습과학연구소 Learning Sciences Research Institute"
-            width={160}
-            height={35}
-            priority
-          />
+          {settings?.logoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={settings.logoUrl}
+              alt="로고"
+              className="h-9 w-auto max-w-[220px] object-contain"
+            />
+          )}
           <span className="font-display text-[20px] font-normal tracking-tight text-accent">
             모둠 구성
           </span>

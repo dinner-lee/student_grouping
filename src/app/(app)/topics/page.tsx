@@ -12,18 +12,13 @@ import {
 } from "@/components/topic-network";
 import { UserAvatar } from "@/components/user-menu";
 import { detectCommunities } from "@/lib/community";
-import { CompassIcon, DiscussionIcon } from "@/components/icons";
-import { ConfirmedGroups } from "@/components/confirmed-groups";
-import { RefreshButton } from "@/components/refresh";
-import { InstantTabs } from "@/components/instant-tabs";
 
 export default async function TopicsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string; tab?: string }>;
+  searchParams: Promise<{ view?: string }>;
 }) {
-  const { view, tab } = await searchParams;
-  const activeTab = tab === "discussion" ? "discussion" : "explore";
+  const { view } = await searchParams;
   const mode = view === "network" ? "network" : view === "keywords" ? "keywords" : "cards";
   const user = await requireUser();
 
@@ -231,20 +226,8 @@ export default async function TopicsPage({
     { href: "/topics?view=keywords", label: "키워드 그래프", active: mode === "keywords" },
   ];
 
-  // 모둠 탭: 확정된 모둠 보기 (내 모둠 카드가 맨 앞에 강조 표시)
-  const discussionContent = <ConfirmedGroups userId={user.id} />;
-
   const exploreContent = (
     <>
-      <div className="-mb-3.5 flex items-center gap-1.5 font-display text-[16px] text-stone-600">
-        <CompassIcon />
-        주제 탐색
-        {mode !== "cards" && (
-          <span className="ml-0.5 text-[12.5px] text-stone-400">
-            {mode === "network" ? "— 관심 키워드가 겹치는 학생 네트워크" : "— 학생과 키워드의 연결"}
-          </span>
-        )}
-      </div>
       {mode === "network" && (
         <TopicNetwork nodes={studentNodes} edges={edges} interactions={interactions} />
       )}
@@ -392,48 +375,30 @@ export default async function TopicsPage({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* 두 탭 내용을 미리 렌더링해 클라이언트에서 즉시 전환 */}
-      <InstantTabs
-        initial={activeTab}
-        tabs={[
-          {
-            key: "explore",
-            label: (
-              <>
-                <CompassIcon size={14} />
-                주제 탐색
-              </>
-            ),
-            right: (
-              <div className="flex rounded-[9px] bg-line-soft p-[3px]">
-                {viewTabs.map((t) => (
-                  <Link
-                    key={t.href}
-                    href={t.href}
-                    className={`font-display rounded-[7px] px-3.5 py-1.5 text-[12.5px] ${
-                      t.active ? "bg-white text-stone-900 shadow-sm" : "text-stone-400"
-                    }`}
-                  >
-                    {t.label}
-                  </Link>
-                ))}
-              </div>
-            ),
-            content: exploreContent,
-          },
-          {
-            key: "discussion",
-            label: (
-              <>
-                <DiscussionIcon size={14} />
-                모둠
-              </>
-            ),
-            right: <RefreshButton />,
-            content: discussionContent,
-          },
-        ]}
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-col gap-0.5">
+          <div className="font-display text-[17px] font-bold tracking-tight">주제 탐색</div>
+          {mode !== "cards" && (
+            <div className="text-[12.5px] text-stone-400">
+              {mode === "network" ? "관심 키워드가 겹치는 학생 네트워크" : "학생과 키워드의 연결"}
+            </div>
+          )}
+        </div>
+        <div className="flex rounded-[9px] bg-line-soft p-[3px]">
+          {viewTabs.map((t) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              className={`font-display rounded-[7px] px-3.5 py-1.5 text-[12.5px] ${
+                t.active ? "bg-white text-stone-900 shadow-sm" : "text-stone-400"
+              }`}
+            >
+              {t.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+      {exploreContent}
     </div>
   );
 }

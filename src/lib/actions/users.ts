@@ -51,3 +51,17 @@ export async function deleteInviteCodeAction(id: string): Promise<{ error?: stri
   revalidatePath("/admin/users");
   return {};
 }
+
+// ── 로고 이미지 설정 ──────────────────────────────────────
+
+export async function updateLogoUrlAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const url = String(formData.get("logoUrl") ?? "").trim().slice(0, 1000);
+  await prisma.appSettings.upsert({
+    where: { id: "main" },
+    create: { id: "main", logoUrl: url || null },
+    update: { logoUrl: url || null },
+  });
+  revalidatePath("/admin/users");
+  revalidatePath("/", "layout");
+}

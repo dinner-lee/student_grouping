@@ -9,7 +9,7 @@ const LEARNER_TABS = [{ href: "/topics", label: "주제 탐색" }];
 const ADMIN_TABS = [
   { href: "/topics", label: "주제 탐색" },
   { href: "/admin/research-groups", label: "모둠 구성" },
-  { href: "/admin/users", label: "계정 관리" },
+  { href: "/admin/users", label: "환경 설정" },
 ];
 
 const tabCls = (active: boolean) =>

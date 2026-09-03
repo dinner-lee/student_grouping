@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -16,7 +15,10 @@ export default async function AppLayout({
   if (!session?.user) redirect("/login");
 
   // 이름/사진은 항상 DB 최신값으로 표시 (프로필 수정 즉시 반영)
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+  const [user, settings] = await Promise.all([
+    prisma.user.findUnique({ where: { id: session.user.id } }),
+    prisma.appSettings.findUnique({ where: { id: "main" } }),
+  ]);
   if (!user) redirect("/login");
 
   return (
@@ -25,14 +27,17 @@ export default async function AppLayout({
         <div className="mx-auto flex w-full max-w-[960px] items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-6">
           <div className="flex min-w-0 items-center gap-4">
             <div className="flex flex-none items-center gap-2.5">
-              <Image
-                src="/lsri-logo.png"
-                alt="학습과학연구소 Learning Sciences Research Institute"
-                width={128}
-                height={28}
-                priority
-              />
-              <span className="hidden h-4 w-px bg-line md:block" />
+              {settings?.logoUrl && (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={settings.logoUrl}
+                    alt="로고"
+                    className="h-7 w-auto max-w-[140px] object-contain"
+                  />
+                  <span className="hidden h-4 w-px bg-line md:block" />
+                </>
+              )}
               <span className="font-display hidden text-[15px] font-normal tracking-tight whitespace-nowrap text-accent md:inline">
                 모둠 구성
               </span>
