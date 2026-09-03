@@ -273,7 +273,7 @@ export default async function TopicsPage({
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {topics.length === 0 && (
-              <div className="text-[13px] text-stone-400">아직 작성된 동료 주제가 없습니다.</div>
+              <div className="text-[13px] text-stone-400">아직 작성된 항목이 없습니다.</div>
             )}
             {topics.map((t) => {
               const liked = t.likes.some((l) => l.userId === user.id);
