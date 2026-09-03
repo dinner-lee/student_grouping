@@ -47,7 +47,7 @@ export function LoginForm() {
         {!isLogin && (
           <>
             <input name="code" placeholder="초대 코드" className={inputCls} required />
-            <input name="name" placeholder="이름 (예: 김서연)" className={inputCls} required />
+            <input name="name" placeholder="이름 (예: 홍길동)" className={inputCls} required />
           </>
         )}
         <input name="username" placeholder="아이디" className={inputCls} required />
