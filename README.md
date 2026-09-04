@@ -79,9 +79,14 @@ pnpm db:seed   # 관리자 계정 admin / admin1234, 초대 코드 WELCOME 생�
 
 1. 이 저장소를 본인 GitHub 계정으로 포크하거나, 그대로 Vercel에 Import 합니다.
 2. Vercel 프로젝트 설정의 Environment Variables에 `DATABASE_URL`, `AUTH_SECRET`, `AUTH_TRUST_HOST=true`를 입력, 설정합니다.
+
    ```bash 
    DATABASE_URL=postgresql://user:password@ep-xxxx.aws.neon.tech/neondb?sslmode=require
    AUTH_SECRET=J+0LqGlqEdp6s30t08+OUgfqrPcpwQW/aodJJSpTNOY=
    AUTH_TRUST_HOST=true
+- DATABASE_URL은 neon에서 새로운 프로젝트를 생성하신 뒤, connect 버튼(좌측 상단, 초록색)을 눌러 표시되는 connection string에서 확인해 주시면 됩니다.
+- (**중요**) psql부터 복사가 아닌 'postgresql://'부터 복사해 주시면 됩니다.
+- AUTH_SECRET은 ```openssl rand -base64 32```명령으로 생성된 코드를 입력하시면 됩니다.
+- AUTH_TRUST_HOST는 true만 입력해 주시면 됩니다.
 4. 배포된 주소로 처음 접속하면 로그인 화면에서 관리자 계정을 생성하는 화면이 나타납니다.
 
