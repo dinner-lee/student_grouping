@@ -104,7 +104,11 @@ export default async function ResearchGroupsPage() {
     },
   };
   const [learners, picks, topics, currentSet, confirmedSets] = await Promise.all([
-    prisma.user.count({ where: { role: "LEARNER" } }),
+    prisma.user.findMany({
+      where: { role: "LEARNER" },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
     prisma.topicPick.findMany({ include: { user: true } }),
     prisma.topic.findMany({
       where: { markdown: { not: "" } },
@@ -208,7 +212,7 @@ export default async function ResearchGroupsPage() {
 
       <ResearchControls
         initialCount={currentSet?.groups.length ?? Math.max(2, Math.min(4, topics.length))}
-        learnerCount={learners}
+        learners={learners.map((l) => ({ id: l.id, name: l.name.split("/")[0].trim() }))}
         pickedCount={pickedCount}
       />
 

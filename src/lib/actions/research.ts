@@ -23,11 +23,16 @@ export async function setTopicPickAction(topicId: string, rank: number | null) {
 }
 
 // 미확정 세트를 지우고 현재 선호를 기준으로 n개 모둠을 새로 생성
-export async function generateResearchGroupsAction(groupCount: number) {
+// excludedUserIds: 이번 구성에서 제외할 학습자 — 배정 대상에서 빠지고, 그 학생의 주제도 앵커 후보에서 제외된다
+export async function generateResearchGroupsAction(
+  groupCount: number,
+  excludedUserIds: string[] = []
+) {
   await requireAdmin();
   const count = Math.max(1, Math.min(20, Math.round(groupCount)));
+  const excluded = new Set(excludedUserIds);
 
-  const [students, picks, topics] = await Promise.all([
+  const [allStudents, picks, allTopics] = await Promise.all([
     prisma.user.findMany({ where: { role: "LEARNER" }, select: { id: true } }),
     prisma.topicPick.findMany(),
     prisma.topic.findMany({
@@ -35,6 +40,8 @@ export async function generateResearchGroupsAction(groupCount: number) {
       select: { id: true, userId: true, user: { select: { role: true } } },
     }),
   ]);
+  const students = allStudents.filter((s) => !excluded.has(s.id));
+  const topics = allTopics.filter((t) => !excluded.has(t.userId));
   if (students.length === 0 || topics.length === 0) return;
 
   // 작성자는 자기 주제에 암묵적 0순위 — 자기 주제가 앵커가 되면 우선 배정

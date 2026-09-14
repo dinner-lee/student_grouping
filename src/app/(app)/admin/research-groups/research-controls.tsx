@@ -8,19 +8,30 @@ import {
 
 export function ResearchControls({
   initialCount,
-  learnerCount,
+  learners,
   pickedCount,
 }: {
   initialCount: number;
-  learnerCount: number;
+  learners: { id: string; name: string }[];
   pickedCount: number;
 }) {
   const [count, setCount] = useState(initialCount);
+  const [excluded, setExcluded] = useState<Set<string>>(new Set());
   const [pending, startTransition] = useTransition();
 
-  const generate = () => startTransition(() => generateResearchGroupsAction(count));
-  const per = learnerCount > 0 ? Math.floor(learnerCount / count) : 0;
-  const rem = learnerCount > 0 ? learnerCount % count : 0;
+  const toggleExclude = (id: string) =>
+    setExcluded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const effectiveCount = learners.length - excluded.size;
+  const generate = () =>
+    startTransition(() => generateResearchGroupsAction(count, [...excluded]));
+  const per = effectiveCount > 0 ? Math.floor(effectiveCount / count) : 0;
+  const rem = effectiveCount > 0 ? effectiveCount % count : 0;
 
   return (
     <div className="flex flex-col gap-5 rounded-[20px] bg-white shadow-[0_18px_44px_-26px_rgba(30,50,90,.32),0_1px_3px_rgba(30,50,90,.04)] p-6">
@@ -47,7 +58,8 @@ export function ResearchControls({
         </div>
         <div className="flex flex-col gap-1 pb-1 text-[12px] text-stone-400">
           <span>
-            학습자 {learnerCount}명 → 모둠당 {per}
+            학습자 {effectiveCount}명{excluded.size > 0 && ` (${excluded.size}명 제외)`} → 모둠당{" "}
+            {per}
             {rem > 0 ? `–${per + 1}` : ""}명 · 선호 제출 {pickedCount}명
           </span>
           <span>
@@ -56,12 +68,42 @@ export function ResearchControls({
         </div>
         <button
           onClick={generate}
-          disabled={pending || learnerCount === 0}
+          disabled={pending || effectiveCount === 0}
           className="font-display ml-auto cursor-pointer rounded-[9px] bg-[linear-gradient(135deg,#2a63b4,#003E81)] px-6 py-2.5 text-[14px] text-white hover:brightness-115 disabled:opacity-60"
         >
           {pending ? "구성 중…" : "모둠 구성"}
         </button>
       </div>
+
+      {learners.length > 0 && (
+        <details className="rounded-[10px] border border-line-soft">
+          <summary className="cursor-pointer list-none px-3.5 py-2.5 text-[12px] font-semibold text-stone-500">
+            모둠 구성에서 제외할 학생
+            {excluded.size > 0 && (
+              <span className="ml-1.5 font-normal text-bad">{excluded.size}명 선택됨</span>
+            )}
+          </summary>
+          <div className="flex flex-wrap gap-1.5 border-t border-line-soft px-3.5 py-3">
+            {learners.map((l) => {
+              const isOut = excluded.has(l.id);
+              return (
+                <button
+                  key={l.id}
+                  type="button"
+                  onClick={() => toggleExclude(l.id)}
+                  className={`cursor-pointer rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors ${
+                    isOut
+                      ? "bg-bad-soft text-bad line-through decoration-2"
+                      : "bg-line-soft text-stone-600 hover:bg-accent-soft hover:text-accent"
+                  }`}
+                >
+                  {l.name}
+                </button>
+              );
+            })}
+          </div>
+        </details>
+      )}
     </div>
   );
 }
