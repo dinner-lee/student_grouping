@@ -22,6 +22,7 @@ export async function TopicWriteView({ inModal = false }: { inModal?: boolean })
         initialTitle={title}
         initialContent={content}
         initialKeywords={topic?.keywords ?? []}
+        hasTopic={!!topic}
         inModal={inModal}
       />
     </div>

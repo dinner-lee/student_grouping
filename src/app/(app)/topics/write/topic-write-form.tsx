@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { saveTopicAction } from "@/lib/actions/topics";
+import { saveTopicAction, deleteTopicAction } from "@/lib/actions/topics";
 import { composeTopicMarkdown } from "@/lib/utils";
 import { RichTextEditor } from "@/components/rich-text-editor";
 
@@ -11,11 +11,13 @@ export function TopicWriteForm({
   initialTitle,
   initialContent,
   initialKeywords,
+  hasTopic = false,
   inModal = false,
 }: {
   initialTitle: string;
   initialContent: string;
   initialKeywords: string[];
+  hasTopic?: boolean;
   inModal?: boolean;
 }) {
   const router = useRouter();
@@ -23,6 +25,7 @@ export function TopicWriteForm({
   const [content, setContent] = useState(initialContent);
   const [keywords, setKeywords] = useState(initialKeywords);
   const [newKeyword, setNewKeyword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const close = () => (inModal ? router.back() : router.push("/topics"));
@@ -37,6 +40,19 @@ export function TopicWriteForm({
     if (!title.trim()) return;
     startTransition(async () => {
       await saveTopicAction(composeTopicMarkdown(title, content), keywords);
+      close();
+    });
+  };
+
+  const remove = () => {
+    if (!confirm("이 주제 포스트를 삭제할까요? 되돌릴 수 없습니다.")) return;
+    setError(null);
+    startTransition(async () => {
+      const res = await deleteTopicAction();
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
       close();
     });
   };
@@ -84,20 +100,35 @@ export function TopicWriteForm({
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-2 pt-1">
-        <button
-          onClick={close}
-          className="font-display cursor-pointer rounded-[9px] px-4 py-2.5 text-[13px] font-semibold text-stone-500 hover:bg-line-soft"
-        >
-          취소
-        </button>
-        <button
-          onClick={save}
-          disabled={pending || !title.trim()}
-          className="font-display cursor-pointer rounded-[9px] bg-[linear-gradient(135deg,#2a63b4,#003E81)] px-5 py-2.5 text-[13px] text-white hover:brightness-115 disabled:cursor-default disabled:bg-line disabled:opacity-60"
-        >
-          {pending ? "저장 중…" : "저장"}
-        </button>
+      {error && <span className="text-[12px] text-bad">{error}</span>}
+
+      <div className="flex items-center justify-between gap-2 pt-1">
+        {hasTopic ? (
+          <button
+            onClick={remove}
+            disabled={pending}
+            className="font-display cursor-pointer rounded-[9px] px-4 py-2.5 text-[13px] font-semibold text-bad hover:bg-bad-soft disabled:opacity-60"
+          >
+            삭제
+          </button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={close}
+            className="font-display cursor-pointer rounded-[9px] px-4 py-2.5 text-[13px] font-semibold text-stone-500 hover:bg-line-soft"
+          >
+            취소
+          </button>
+          <button
+            onClick={save}
+            disabled={pending || !title.trim()}
+            className="font-display cursor-pointer rounded-[9px] bg-[linear-gradient(135deg,#2a63b4,#003E81)] px-5 py-2.5 text-[13px] text-white hover:brightness-115 disabled:cursor-default disabled:bg-line disabled:opacity-60"
+          >
+            {pending ? "저장 중…" : "저장"}
+          </button>
+        </div>
       </div>
     </div>
   );
